@@ -42,7 +42,6 @@ router.get('/:id', async (req, res) => {
 
 // create new product
 router.post('/', (req, res) => {
-  console.log("Request Body: ", req.body)
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -135,7 +134,7 @@ router.delete('/:id', async (req, res) => {
         id: req.params.id,
       }
     })
-    res.status(200).json(productToDelete);
+    res.status(200).json("deleted!");
   } catch (err) {
     res.status(500).json(err);
   }
