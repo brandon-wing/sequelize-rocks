@@ -28,10 +28,10 @@ router.get('/:id', async (req, res) => {
   try{
     console.log("params dot id", req.params.id)
     const oneProduct = await Product.findByPk(req.params.id, {
-      include: {
-        model: Category,
-        model: Tag
-      }
+      include: [
+        { model: Category },
+        { model: Tag }
+      ]
     });
     res.json(oneProduct)
   }
@@ -52,9 +52,7 @@ router.post('/', (req, res) => {
     }
   */
 
-    let tempTags = req.body.tagIds;
-    console.log("Tags: ", tempTags)
-    console.log("Type: ", typeof tempTags)
+
 
   Product.create(req.body)
     .then((product) => {
