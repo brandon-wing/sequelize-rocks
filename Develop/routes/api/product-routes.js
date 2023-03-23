@@ -8,10 +8,10 @@ router.get('/', async (req, res) => {
   // find all products
   try {
     const allProducts = await Product.findAll({
-      include: {
-        model: Category,
-        model: Tag
-      }
+      include: [
+        { model: Category },
+        { model: Tag }
+      ]
     });
     res.json(allProducts)
         }
@@ -26,6 +26,7 @@ router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   try{
+    console.log("params dot id", req.params.id)
     const oneProduct = await Product.findByPk(req.params.id, {
       include: {
         model: Category,
@@ -41,6 +42,7 @@ router.get('/:id', async (req, res) => {
 
 // create new product
 router.post('/', (req, res) => {
+  console.log("Request Body: ", req.body)
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -49,16 +51,30 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
+
+    let tempTags = req.body.tagIds;
+    console.log("Tags: ", tempTags)
+    console.log("Type: ", typeof tempTags)
+
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
+     if (req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
             product_id: product.id,
             tag_id,
           };
         });
+        
+    /*  if (tempTags.length) {
+        const productTagIdArr = tempTags.map((tag_id) => {
+          return {
+            product_id: product.id,
+            tag_id,
+          };
+        });
+        */
         return ProductTag.bulkCreate(productTagIdArr);
       }
       // if no product tags, just respond
@@ -114,6 +130,8 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
+
+  console.log("Params: ", req.params);
   // delete one product by its `id` value
 });
 
